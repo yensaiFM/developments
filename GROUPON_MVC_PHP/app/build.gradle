@@ -1,0 +1,23 @@
+apply plugin: 'com.android.application'
+android {
+    compileSdkVersion 21
+    buildToolsVersion '21.1.2'
+    defaultConfig {
+        applicationId "com.seas.groupon_mvc_php"
+        minSdkVersion 17
+        targetSdkVersion 21
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+        }
+    }
+    productFlavors {
+    }
+}
+dependencies {
+    compile 'com.google.android:android:4.1.1.4'
+    compile 'com.google.android.gms:play-services:7.5.0'
+    compile project(':maps')
+}
