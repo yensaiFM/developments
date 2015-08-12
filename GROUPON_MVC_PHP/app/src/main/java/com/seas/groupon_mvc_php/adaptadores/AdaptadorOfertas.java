@@ -9,6 +9,9 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -72,3 +75,115 @@ public class AdaptadorOfertas extends ArrayAdapter<Oferta>{
     }
 }
 
+/*
+public class AdaptadorOfertas extends BaseAdapter implements Filterable{
+    private LayoutInflater mLayoutInflater;
+    private ArrayList<Oferta> ofertasList;
+    private ArrayList<Oferta> ofertasFilterList;
+    private OfertaFilter ofertaFilter;
+    private Context context;
+
+    public AdaptadorOfertas(Context context,
+                            int disenyoPorFila,
+                            ArrayList<Oferta> ofertas) {
+        ofertasList = ofertas;
+        ofertasFilterList = ofertas;
+        mLayoutInflater = LayoutInflater.from(context);
+        this.context = context;
+    }
+
+    @Override
+    public int getCount() {
+        return ofertasList.size();
+    }
+
+    @Override
+    public Oferta getItem(int position) {
+        return ofertasList.get(position);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    public void updateOfertasList(ArrayList<Oferta> ofertas) {
+        this.ofertasList.clear();
+        this.ofertasList.addAll(ofertas);
+        this.notifyDataSetChanged();
+    }
+
+    @Override
+    public View getView(int position, View view, ViewGroup parent) {
+        View updateView;
+        ViewHolder viewHolder;
+        if (view == null) {
+            updateView = mLayoutInflater.inflate(R.layout.list_item, null);
+            viewHolder = new ViewHolder();
+
+            viewHolder.oTitulo = (TextView) updateView.findViewById(R.id.row_ofertaTitulo);
+            viewHolder.oPrecioOriginal = (TextView) updateView.findViewById(R.id.row_precioOriginalOferta);
+            viewHolder.oPrecioOferta = (TextView) updateView.findViewById(R.id.row_precioOfertaOferta);
+
+            updateView.setTag(viewHolder);
+
+        } else {
+            updateView = view;
+            viewHolder = (ViewHolder) updateView.getTag();
+        }
+
+        final Oferta item = getItem(position);
+        viewHolder.oTitulo.setText(item.getOfertaTitulo());
+        viewHolder.oPrecioOriginal.setText("Precio original: " + String.valueOf(item.getPrecioOriginalOferta()) + "€");
+        viewHolder.oPrecioOferta.setText("Precio oferta: " + String.valueOf(item.getPrecioOfertaOferta()) + "€");
+
+        return updateView;
+    }
+
+    @Override
+    public Filter getFilter() {
+        if (ofertaFilter == null) {
+            ofertaFilter = new OfertaFilter();
+        }
+        return ofertaFilter;
+    }
+
+    static class ViewHolder{
+        TextView oTitulo;
+        TextView oPrecioOriginal;
+        TextView oPrecioOferta;
+
+    }
+
+    private class OfertaFilter extends Filter
+    {
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            long categoryId= Long.parseLong(constraint.toString());
+            FilterResults results = new FilterResults();
+            if (categoryId > 0) {
+                ArrayList<Oferta> filterList = new ArrayList<Oferta>();
+                for (int i = 0; i < ofertasFilterList.size(); i++) {
+                    if ( (ofertasFilterList.get(i).getIdCategory())== categoryId) {
+                        Oferta oferta = ofertasFilterList.get(i);
+                        filterList.add(oferta);
+                    }
+                }
+                results.count = filterList.size();
+                results.values = filterList;
+            } else {
+                results.count = ofertasFilterList.size();
+                results.values = ofertasFilterList;
+            }
+            return results;
+        }
+
+
+        @Override
+        protected void publishResults(CharSequence constraint,
+                                      FilterResults results) {
+            ofertasList = (ArrayList<Oferta>)results.values;
+            notifyDataSetChanged();
+        }
+    }
+}*/

@@ -2,9 +2,12 @@ package com.seas.groupon_mvc_php;
 
 import java.util.ArrayList;
 
+import com.seas.groupon_mvc_php.adaptadores.AdaptadorCategorias;
 import com.seas.groupon_mvc_php.adaptadores.AdaptadorOfertas;
 import com.seas.groupon_mvc_php.beans.Oferta;
+import com.seas.groupon_mvc_php.beans.Category;
 import com.seas.groupon_mvc_php.datos.GrouponData;
+import com.seas.groupon_mvc_php.threads.ServiciosCategory;
 import com.seas.groupon_mvc_php.threads.ServiciosLista;
 import com.seas.groupon_mvc_php.threads.ServiciosTuristicLocation;
 
@@ -19,6 +22,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Spinner;
 
 public class ListaOfertasActivity extends Activity {
 	private ArrayList<Oferta> m_ofertas = null;
@@ -28,6 +32,14 @@ public class ListaOfertasActivity extends Activity {
 	public void setM_ofertas(ArrayList<Oferta> m_ofertas) {
 		this.m_ofertas = m_ofertas;
 	}
+	private ArrayList<Category> m_categorias = null;
+	public ArrayList<Category> getM_categorias() {
+		return m_categorias;
+	}
+	public void setM_categorias(ArrayList<Category> m_categorias) {
+		this.m_categorias = m_categorias;
+	}
+
 
 	private String idc = "";
 	public String get_idc () {
@@ -46,7 +58,9 @@ public class ListaOfertasActivity extends Activity {
 	}
 
 	private AdaptadorOfertas adaptadorOfertas;
-	private ServiciosLista serviciosLista = new ServiciosLista(); // Revisar MFM
+	private ServiciosLista serviciosLista = new ServiciosLista();
+	private AdaptadorCategorias adaptadorCategorias;
+	private ServiciosCategory serviciosCategory = new ServiciosCategory();
 	
 	private static ListaOfertasActivity listaOfertasActivity = null;
 	public static ListaOfertasActivity getInstance(){
@@ -60,14 +74,19 @@ public class ListaOfertasActivity extends Activity {
         listaOfertasActivity = this;
         
         ListView lv = (ListView)findViewById(R.id.listView);
-		//Button btnMapa = (Button) findViewById(R.id.irMapaTodasOferta);
+		Button btnMapa = (Button) findViewById(R.id.irMapaTodasOferta);
+		Spinner spinnerCategory = (Spinner)findViewById(R.id.categorySpinner);
 
 		m_ofertas = new ArrayList<Oferta>();
+		m_categorias = new ArrayList<Category>();
         actualizarListaOfertas();
-		//serviciosLista.miThread(listaOfertasActivity.get_idc(), listaOfertasActivity.get_idsc());
-		serviciosLista.miThread("", "");
+		serviciosLista.miThread(listaOfertasActivity.get_idc(), listaOfertasActivity.get_idsc());
+		serviciosCategory.getCategorias();
 
 		// getBaseContext()
+		adaptadorCategorias = new AdaptadorCategorias(this, android.R.layout.simple_spinner_item, m_categorias);
+		adaptadorCategorias.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		spinnerCategory.setAdapter(adaptadorCategorias);
 		adaptadorOfertas = new AdaptadorOfertas(this, R.layout.list_item, m_ofertas);
 		lv.setAdapter(this.adaptadorOfertas);
 		
@@ -89,7 +108,7 @@ public class ListaOfertasActivity extends Activity {
 			}
 		});
 
-		/*
+
 		btnMapa.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -98,12 +117,18 @@ public class ListaOfertasActivity extends Activity {
 				mapa.putExtra("idsc", listaOfertasActivity.get_idsc());
 				startActivity(mapa);
 			}
-		}); */
+		});
     }
     
    public void actualizarListaOfertas(){
 		if(m_ofertas != null && m_ofertas.size() > 0){
 			adaptadorOfertas.notifyDataSetChanged();
+		}
+   }
+
+	public void actualizarListaCategorias(){
+		if(m_categorias != null && m_categorias.size() > 0){
+			adaptadorCategorias.notifyDataSetChanged();
 		}
 	}
 }

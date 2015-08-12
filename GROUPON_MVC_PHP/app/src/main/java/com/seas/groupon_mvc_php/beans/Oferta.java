@@ -18,6 +18,7 @@ public class Oferta {
     private String telefonoCentro;
     private String mailCentro;
     private String webCentro;
+    private int idCategory;
 
     public String getOfertaTitulo() {
         return ofertaTitulo;
@@ -136,5 +137,12 @@ public class Oferta {
     }
     public void setWebCentro(String webCentro) {
         this.webCentro = webCentro;
+    }
+
+    public int getIdCategory() {
+        return idCategory;
+    }
+    public void setIdCategory(int idCategory) {
+        this.idCategory = idCategory;
     }
 }
