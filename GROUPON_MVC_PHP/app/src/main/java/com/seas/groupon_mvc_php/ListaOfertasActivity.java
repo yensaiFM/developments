@@ -73,9 +73,9 @@ public class ListaOfertasActivity extends Activity {
         setContentView(R.layout.activity_lista_ofertas);
         listaOfertasActivity = this;
         
-        ListView lv = (ListView)findViewById(R.id.listView);
-		Button btnMapa = (Button) findViewById(R.id.irMapaTodasOferta);
-		Spinner spinnerCategory = (Spinner)findViewById(R.id.categorySpinner);
+        final ListView lv = (ListView)findViewById(R.id.listView);
+		final Button btnMapa = (Button) findViewById(R.id.irMapaTodasOferta);
+		final Spinner spinnerCategory = (Spinner)findViewById(R.id.categorySpinner);
 
 		m_ofertas = new ArrayList<Oferta>();
 		m_categorias = new ArrayList<Category>();
@@ -89,38 +89,53 @@ public class ListaOfertasActivity extends Activity {
 		spinnerCategory.setAdapter(adaptadorCategorias);
 		adaptadorOfertas = new AdaptadorOfertas(this, R.layout.list_item, m_ofertas);
 		lv.setAdapter(this.adaptadorOfertas);
-		
-		lv.setOnItemClickListener(new OnItemClickListener() {
+
+		spinnerCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 			@Override
-			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				Oferta oferta = (Oferta) parent.getItemAtPosition(position);
-
-				// Almaceno la Oferta seleccionada para que sea accesible
-				// desde cualquier punto de la aplicacion
-				GrouponData.setOfertaSeleccionado(oferta);
-
-				Intent myIntent = new Intent(getBaseContext(), MapaActivity.class);
-				startActivity(myIntent);
-
-				//Bundle bundle = new Bundle();
-				//bundle.putString(myKey, local.getLocalName());
-				//myIntent.putExtras(bundle);
+			public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+				Category SelectedCategory = adaptadorCategorias.getItem(arg2);
+				listaOfertasActivity.set_idc(String.valueOf(SelectedCategory.getIdCategory()));
+				GrouponData.setCategorySeleccionado(SelectedCategory);
+				adaptadorOfertas.clear();
+				serviciosLista.miThread(listaOfertasActivity.get_idc(), listaOfertasActivity.get_idsc());
+				adaptadorOfertas.notifyDataSetChanged();
 			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> arg0) {
+			}
+		});
+
+		lv.setOnItemClickListener(new OnItemClickListener() {
+				@Override
+				public void onItemClick (AdapterView < ? > parent, View view,int position, long id){
+					Oferta oferta = (Oferta) parent.getItemAtPosition(position);
+
+					// Guardamos valor oferta seleccionada por usuario
+					GrouponData.setOfertaSeleccionado(oferta);
+
+					Intent myIntent = new Intent(getBaseContext(), DetalleActivity.class);
+					startActivity(myIntent);
+
+					//Bundle bundle = new Bundle();
+					//bundle.putString(myKey, local.getLocalName());
+					//myIntent.putExtras(bundle);
+				}
 		});
 
 
 		btnMapa.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
+				@Override
+				public void onClick (View v){
 				Intent mapa = new Intent(ListaOfertasActivity.this, MapaActivity.class);
 				mapa.putExtra("idc", listaOfertasActivity.get_idc());
 				mapa.putExtra("idsc", listaOfertasActivity.get_idsc());
 				startActivity(mapa);
 			}
 		});
-    }
-    
-   public void actualizarListaOfertas(){
+	}
+
+	public void actualizarListaOfertas(){
 		if(m_ofertas != null && m_ofertas.size() > 0){
 			adaptadorOfertas.notifyDataSetChanged();
 		}
